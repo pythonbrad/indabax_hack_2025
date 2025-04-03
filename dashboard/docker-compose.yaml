@@ -1,0 +1,6 @@
+services:
+  app:
+    image: ixh-25-dashboard
+    build: .
+    ports:
+      - 8050:8050

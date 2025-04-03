@@ -1,0 +1,31 @@
+[project]
+name = "ixh-25-dashboard"
+version = "0.1.0"
+description = "Proposal solution for the indabaX hackathon 2025"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dash>=2.18.2",
+    "dash-bootstrap-components>=1.7.1",
+    "geopandas>=1.0.1",
+    "nltk>=3.9.1",
+    "numpy>=2.2.4",
+    "openpyxl>=3.1.5",
+    "pandas>=2.2.3",
+    "plotly>=6.0.0",
+    "pyproject-toml>=0.1.0",
+    "requests>=2.32.3",
+    "scikit-learn>=1.6.1",
+]
+
+[tool.setuptools]
+packages = []
+
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.0",
+]
+prod = [
+    "gunicorn>=23.0.0",
+]

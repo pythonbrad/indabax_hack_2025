@@ -14,8 +14,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-editable --no-dev --group prod
 
 # Download geo data
-RUN  --mount=type=cache,target=install-deps.sh \
-     --mount=type=bind,source=install-deps.sh,target=install-deps.sh \
+RUN --mount=type=cache,target=install-deps.sh \
+    --mount=type=bind,source=install-deps.sh,target=install-deps.sh \
     ./install-deps.sh
 
 # Copy the project into the intermediate image
@@ -28,5 +28,7 @@ WORKDIR /app
 # Copy the environment, but not the source code
 COPY --from=builder --chown=app:app /app /app
 
+EXPOSE 8050
+
 # Run the application
-CMD [".venv/bin/python", "main.py"]
+CMD [".venv/bin/python", "-m", "gunicorn", "main:server", "--bind", "0.0.0.0:8050"]
