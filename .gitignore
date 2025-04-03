@@ -175,6 +175,3 @@ cython_debug/
 
 # Vim
 *.sw[pon]
-# Custom
-data/preprocessed
-data/geo

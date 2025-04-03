@@ -1,6 +1,0 @@
-services:
-  app:
-    image: indabax-hack-2025
-    build: .
-    ports:
-      - 8050:8050

@@ -69,6 +69,12 @@ Welcome to the **Blood Donation Campaign Dashboard**! 🎉 This dashboard is des
   - Click on a sentiment category (e.g., positive) to view detailed feedback comments. 💬
   - Use the time range slider to analyze sentiment trends over time. 📅
 
+### **7. 🤖 Eligibility Prediction AI Model**
+- **Purpose**: Predict if a donor is eligible or not.
+- **Interactions**:
+  - Fill the form with known information on the donor.
+  - The prediction will be generated in realtime.
+
 ---
 
 ## **💡 General Tips**

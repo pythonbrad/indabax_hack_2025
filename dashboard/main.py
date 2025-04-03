@@ -5,6 +5,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import pathlib
 import logging
+import requests
 
 import config
 import preprocess
@@ -46,6 +47,9 @@ app = dash.Dash(
     suppress_callback_exceptions=True,
     external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP],
 )
+
+# Useful when deploying with gunicorn
+server = app.server
 
 # Sidebar
 offcanvas = html.Div(
@@ -112,6 +116,15 @@ offcanvas = html.Div(
                                     "Survey/Feedback Sentiment Analysis",
                                 ],
                                 href="/feedback",
+                                active="exact",
+                                className="mb-2",
+                            ),
+                            dbc.NavLink(
+                                [
+                                    html.I(className="bi bi-robot me-2"),
+                                    "Eligibility Prediction AI Model",
+                                ],
+                                href="/eligibility-prediction",
                                 active="exact",
                                 className="mb-2",
                             ),
@@ -410,6 +423,77 @@ def render_page_content(pathname):
                 dcc.Graph(id="feedback-group"),
             ]
         )
+    elif pathname == "/eligibility-prediction":
+        try:
+            if not config.ELIGIBILITY_PREDICTION_API:
+                raise Exception("Eligibility prediction API not set!")
+
+            data = requests.get(config.ELIGIBILITY_PREDICTION_API + "/entries").json()
+        except Exception as err:
+            logging.error(f"API error: {err}")
+
+            return dbc.Alert(
+                "Error: Unable to contact the Elibility Prediction AI model API",
+                color="danger",
+            )
+
+        return html.Div(
+            [
+                html.H1(
+                    "Eligibility Predicton AI Model", style={"textAlign": "center"}
+                ),
+                dbc.Alert(
+                    "The AI model assumpt that the patient is eligible at first before any prediction. "
+                    "The result of this prediction is not accurate and can change based on the provided information.",
+                    color="warning",
+                ),
+                # Input to enter the age
+                html.Label("Type the age (optional)"),
+                dbc.Input(
+                    id="eligibility-predict-age-input",
+                    type="number",
+                    min=0,
+                    max=100,
+                    step=1,
+                ),
+                # Dropdown to select the genre
+                html.Label("Select the gender (optional)"),
+                dcc.Dropdown(
+                    id="eligibility-predict-genre-dropdown",
+                    options=[
+                        {"label": genre, "value": genre} for genre in data["genres"]
+                    ],
+                    value=None,  # Default
+                    clearable=True,
+                ),
+                # Dropdown to select the profession
+                html.Label("Select the profession (optional)"),
+                dcc.Dropdown(
+                    id="eligibility-predict-profession-dropdown",
+                    options=[
+                        {"label": profession, "value": profession}
+                        for profession in data["professions"]
+                    ],
+                    value=None,  # Default
+                    clearable=True,
+                ),
+                # Dropdown to select the health condition
+                html.Label("Select the health condition (optional)"),
+                dcc.Dropdown(
+                    id="eligibility-predict-health-condition-dropdown",
+                    options=[
+                        {"label": cond, "value": cond}
+                        for cond in data["health_conditions"]
+                    ],
+                    value=None,  # Default
+                    clearable=True,
+                ),
+                html.Br(),
+                # Result
+                html.H3("Result", style={"textAlign": "center"}),
+                dbc.Progress(id="eligibility-predict-output"),
+            ]
+        )
 
     # If the user tries to reach a different page, return a 404 message
     return html.Div(
@@ -471,6 +555,35 @@ def update_feedback_charts(year, group):
     return dashboard.feedback_analysis(year, group)
 
 
+@app.callback(
+    [
+        Output("eligibility-predict-output", "label"),
+        Output("eligibility-predict-output", "color"),
+        Output("eligibility-predict-output", "value"),
+    ],
+    [
+        Input("eligibility-predict-age-input", "value"),
+        Input("eligibility-predict-genre-dropdown", "value"),
+        Input("eligibility-predict-profession-dropdown", "value"),
+        Input("eligibility-predict-health-condition-dropdown", "value"),
+    ],
+)
+def update_eligibility_predict_result(age, genre, profession, health_condition):
+    data = requests.post(
+        config.ELIGIBILITY_PREDICTION_API + "/input",
+        json={
+            "age": age,
+            "genre": genre,
+            "professions": [profession] if profession else [],
+            "health_conditions": [health_condition] if health_condition else [],
+        },
+    ).json()
+    score = int(data["score"] * 100)
+    color = ["danger", "warning", "info", "primary", "success"][score // 25]
+
+    return f"{score}%", color, score
+
+
 # Run server
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0")
+    app.run()
