@@ -115,7 +115,7 @@ def preprocess(
     )
 
     # Update column names to reflect criteria description
-    dataframe.rename(columns=lambda x: re.sub(r".*\[|\]", "", x), inplace=True)
+    dataframe.rename(columns=lambda x: re.sub(r".*\[|\]", "", x).strip(), inplace=True)
 
     # Geo data preparation
     logger.info("Preprocess of the GEO data...")
