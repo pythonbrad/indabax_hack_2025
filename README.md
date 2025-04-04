@@ -22,7 +22,7 @@ Experience our interactive dashboard here:
 *(For faster testing, consider [local deployment](#-deployment-guide).)*  
 
 ## 📖 **User Manual**
-Consult our [`USER-MANUAL.md`](dashboad/USER-MANUAL.md) to understand more about how to use how dashboard. 
+Consult our [`USER-MANUAL.md`](dashboard/USER-MANUAL.md) to understand more about how to use how dashboard. 
 
 ## 🤔 **Assumptions**
 Some of our assumptions and decision are available at [`ASSUMPTION.md`](ASSUMPTION.md).
