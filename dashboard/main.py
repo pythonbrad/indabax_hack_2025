@@ -8,34 +8,17 @@ import logging
 import requests
 
 import config
-import preprocess
 from dashboard import Dashboard
 
-
-# Whether if we should preprocess the data after a hot reload
-REALTIME = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# Check if the data are already preprocessed.
-if REALTIME or not (
-    pathlib.Path(config.PREPROCESSED_DATASET_FILE).exists()
-    and pathlib.Path(config.PREPROCESSED_GEO_DATASET_FILE).exists()
-):
-    logger.info("Preprocessing of the dataset...")
-    dataframe = preprocess.preprocess(
-        config.RAW_DATASET_FILE,
-        config.PREPROCESSED_DATASET_FILE,
-        config.RAW_GEO_DATASET_FILE,
-        config.PREPROCESSED_GEO_DATASET_FILE,
-    )
-else:
-    logger.info("Loading of the dataset...")
-    dataframe = pd.read_excel(config.PREPROCESSED_DATASET_FILE)
-    logger.info("Dataset loaded!")
+logger.info("Loading of the dataset...")
+dataframe = pd.read_excel(config.PREPROCESSED_DATASET_FILE)
+logger.info("Dataset loaded!")
 
 
 # Initialize the dashboard

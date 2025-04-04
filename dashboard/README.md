@@ -8,12 +8,7 @@
 ├── dashboard/             # Dashboard components
 │   └── __init__.py        # Layout definitions
 ├── data/                  # Data storage
-│   ├── raw/               # 📌 Raw datasets (place dataset.xlsx here)
-│   ├── geo/               # Geographic files (shapefiles)
 │   └── preprocessed/      # Processed data (auto-generated)
-├── preprocess/            # Data pipeline
-│   ├── __init__.py
-│   └── utils.py           # Cleaning/transformation functions
 ├── main.py                # Application entry point
 ├── docker-compose.yaml    # Ready to use docker compose file
 ├── Dockerfile             # Container configuration
@@ -30,19 +25,12 @@
 
 ### **Setup Instructions**  
 
-1️⃣ **Add Dataset**  
-   - Place `dataset.xlsx` in `data/raw/`.  
-
-2️⃣ **Download & Extract Geo-Data**  
-   - Get it at [`cmr_admbnda_inc_20180104_shp.zip`](https://data.humdata.org/...).  
-   - Extract into `data/geo/`.  
-
-3️⃣ **Install Dependencies**  
+**Install Dependencies**  
    ```sh
    pip install .
    ```
 
-4️⃣ **Run the App**  
+**Run the App**  
    - **With Python:**  
      ```sh
      python main.py
@@ -56,11 +44,11 @@
      docker compose up -d
      ```  
 
-5️⃣ **Access Dashboard**  
+**Access Dashboard**  
    Open your browser at:  
    🔗 [http://127.0.0.1:8050/](http://127.0.0.1:8050/)  
 
-6️⃣ **Confif the API url (optional)**
+**Confif the API url (optional)**
 
     In case the you want to use an API for the Eligibility prediction model, you can set it as a environment variable like below.
 
