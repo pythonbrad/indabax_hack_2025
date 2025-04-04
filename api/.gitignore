@@ -1,1 +1,2 @@
-datagit c
+data/*
+!data/preprocessed

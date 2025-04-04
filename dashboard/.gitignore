@@ -1,3 +1,2 @@
-# Custom
-data/preprocessed
-data/geo
+data/*
+!data/preprocessed
