@@ -134,6 +134,7 @@ offcanvas = html.Div(
                         className="nav-pills-custom",  # Custom class for additional styling
                     ),
                 ],
+                className="mb-3",
             ),
             id="offcanvas",
             title=[
@@ -199,7 +200,7 @@ content = dbc.Container(
             fullscreen=True,
         )
     ],
-    class_name="mt-5",
+    class_name="my-5",
 )
 
 
@@ -258,15 +259,14 @@ def render_page_content(pathname):
                     id="eligibility-pie",
                     figure=dashboard.health_conditions_and_eligibility(),
                 ),
-                # Dropdown for selecting health condition
-                dcc.Dropdown(
-                    id="eligibility-condition-dropdown",
+                # Select for selecting health condition
+                dbc.Select(
+                    id="eligibility-condition-select",
                     options=[
                         {"label": cond, "value": cond}
                         for cond in dashboard.health_conditions
                     ],
                     value=dashboard.health_conditions[0],  # Default selection
-                    clearable=False,
                 ),
                 # Bar Chart - Health Condition Impact
                 dcc.Graph(id="eligibility-condition-bar"),
@@ -349,14 +349,13 @@ def render_page_content(pathname):
                 html.H1(
                     "Campaign Effectiveness Analysis", style={"textAlign": "center"}
                 ),
-                # Dropdown to select year
-                dcc.Dropdown(
-                    id="campaign-year-dropdown",
+                # Select to select year
+                dbc.Select(
+                    id="campaign-year-select",
                     options=[
                         {"label": str(year), "value": year} for year in dashboard.years
                     ],
                     value=max(dashboard.years),  # Default to most recent year
-                    clearable=False,
                 ),
                 # Line Chart - Donations Over Time
                 dcc.Graph(id="campaign-donation-trend"),
@@ -372,14 +371,13 @@ def render_page_content(pathname):
         return html.Div(
             [
                 html.H1("Donor Retention Analysis", style={"textAlign": "center"}),
-                # Dropdown to select year
-                dcc.Dropdown(
-                    id="retention-year-dropdown",
+                # Select to select year
+                dbc.Select(
+                    id="retention-year-select",
                     options=[
                         {"label": str(year), "value": year} for year in dashboard.years
                     ],
                     value=max(dashboard.years),  # Default to most recent year
-                    clearable=False,
                 ),
                 # Pie Chart - Repeat Donation Frequency
                 dcc.Graph(id="retention-donation"),
@@ -401,21 +399,19 @@ def render_page_content(pathname):
                 html.H1(
                     "Survey/Feedback Sentiment Analysis", style={"textAlign": "center"}
                 ),
-                # Dropdown to select year
-                dcc.Dropdown(
-                    id="feedback-year-dropdown",
+                # Select to select year
+                dbc.Select(
+                    id="feedback-year-select",
                     options=[
                         {"label": year, "value": year} for year in dashboard.years
                     ],
                     value=max(dashboard.years),  # Default to last
-                    clearable=False,
                 ),
-                # Dropdown to select group
-                dcc.Dropdown(
-                    id="feedback-group-dropdown",
+                # Select to select group
+                dbc.Select(
+                    id="feedback-group-select",
                     options=[{"label": group, "value": group} for group in groups],
                     value=groups[0],  # Default to first
-                    clearable=False,
                 ),
                 # Pie Chart - Overall feedback analysis
                 dcc.Graph(id="feedback-donation"),
@@ -456,37 +452,35 @@ def render_page_content(pathname):
                     max=100,
                     step=1,
                 ),
-                # Dropdown to select the genre
+                # Select to select the genre
                 html.Label("Select the gender (optional)"),
-                dcc.Dropdown(
-                    id="eligibility-predict-genre-dropdown",
+                dbc.Select(
+                    id="eligibility-predict-genre-select",
                     options=[
-                        {"label": genre, "value": genre} for genre in data["genres"]
+                        {"label": genre, "value": genre}
+                        for genre in [None] + data["genres"]
                     ],
                     value=None,  # Default
-                    clearable=True,
                 ),
-                # Dropdown to select the profession
+                # Select to select the profession
                 html.Label("Select the profession (optional)"),
-                dcc.Dropdown(
-                    id="eligibility-predict-profession-dropdown",
+                dbc.Select(
+                    id="eligibility-predict-profession-select",
                     options=[
                         {"label": profession, "value": profession}
-                        for profession in data["professions"]
+                        for profession in [None] + data["professions"]
                     ],
                     value=None,  # Default
-                    clearable=True,
                 ),
-                # Dropdown to select the health condition
+                # Select to select the health condition
                 html.Label("Select the health condition (optional)"),
-                dcc.Dropdown(
-                    id="eligibility-predict-health-condition-dropdown",
+                dbc.Select(
+                    id="eligibility-predict-health-condition-select",
                     options=[
                         {"label": cond, "value": cond}
-                        for cond in data["health_conditions"]
+                        for cond in [None] + data["health_conditions"]
                     ],
                     value=None,  # Default
-                    clearable=True,
                 ),
                 html.Br(),
                 # Result
@@ -508,9 +502,9 @@ def render_page_content(pathname):
 
 @app.callback(
     Output("eligibility-condition-bar", "figure"),
-    Input("eligibility-condition-dropdown", "value"),
+    Input("eligibility-condition-select", "value"),
 )
-def update_eligibiliy_chart(condition):
+def update_eligibiliy_chart(condition: str):
     return dashboard.health_conditions_and_eligibility(condition)
 
 
@@ -521,10 +515,10 @@ def update_eligibiliy_chart(condition):
         Output("campaign-donation-education", "figure"),
         Output("campaign-donation-profession", "figure"),
     ],
-    [Input("campaign-year-dropdown", "value")],
+    [Input("campaign-year-select", "value")],
 )
-def update_campaign_charts(selected_year):
-    return dashboard.campaign_effectiveness(selected_year)
+def update_campaign_charts(selected_year: str):
+    return dashboard.campaign_effectiveness(int(selected_year))
 
 
 @app.callback(
@@ -535,10 +529,10 @@ def update_campaign_charts(selected_year):
         Output("retention-profession", "figure"),
         Output("retention-region", "figure"),
     ],
-    [Input("retention-year-dropdown", "value")],
+    [Input("retention-year-select", "value")],
 )
-def update_retention_charts(selected_year):
-    return dashboard.donor_retention(selected_year)
+def update_retention_charts(selected_year: str):
+    return dashboard.donor_retention(int(selected_year))
 
 
 @app.callback(
@@ -547,12 +541,12 @@ def update_retention_charts(selected_year):
         Output("feedback-group", "figure"),
     ],
     [
-        Input("feedback-year-dropdown", "value"),
-        Input("feedback-group-dropdown", "value"),
+        Input("feedback-year-select", "value"),
+        Input("feedback-group-select", "value"),
     ],
 )
-def update_feedback_charts(year, group):
-    return dashboard.feedback_analysis(year, group)
+def update_feedback_charts(year: str, group: str):
+    return dashboard.feedback_analysis(int(year), group)
 
 
 @app.callback(
@@ -563,12 +557,14 @@ def update_feedback_charts(year, group):
     ],
     [
         Input("eligibility-predict-age-input", "value"),
-        Input("eligibility-predict-genre-dropdown", "value"),
-        Input("eligibility-predict-profession-dropdown", "value"),
-        Input("eligibility-predict-health-condition-dropdown", "value"),
+        Input("eligibility-predict-genre-select", "value"),
+        Input("eligibility-predict-profession-select", "value"),
+        Input("eligibility-predict-health-condition-select", "value"),
     ],
 )
-def update_eligibility_predict_result(age, genre, profession, health_condition):
+def update_eligibility_predict_result(
+    age: str, genre: str, profession: str, health_condition: str
+):
     data = requests.post(
         config.ELIGIBILITY_PREDICTION_API + "/input",
         json={
@@ -586,4 +582,4 @@ def update_eligibility_predict_result(age, genre, profession, health_condition):
 
 # Run server
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
