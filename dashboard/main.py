@@ -458,7 +458,7 @@ def render_page_content(pathname):
                     id="eligibility-predict-genre-select",
                     options=[
                         {"label": genre, "value": genre}
-                        for genre in [None] + data["genres"]
+                        for genre in [None] + sorted(data["genres"])
                     ],
                     value=None,  # Default
                 ),
@@ -468,7 +468,7 @@ def render_page_content(pathname):
                     id="eligibility-predict-profession-select",
                     options=[
                         {"label": profession, "value": profession}
-                        for profession in [None] + data["professions"]
+                        for profession in [None] + sorted(data["professions"])
                     ],
                     value=None,  # Default
                 ),
@@ -478,7 +478,7 @@ def render_page_content(pathname):
                     id="eligibility-predict-health-condition-select",
                     options=[
                         {"label": cond, "value": cond}
-                        for cond in [None] + data["health_conditions"]
+                        for cond in [None] + sorted(data["health_conditions"])
                     ],
                     value=None,  # Default
                 ),

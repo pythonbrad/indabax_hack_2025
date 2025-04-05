@@ -19,9 +19,9 @@ class Dashboard:
         # Health conditions
         start_column = dataframe.columns.get_loc("ÉLIGIBILITÉ AU DON.")
         end_column = dataframe.columns.get_loc("Si autres raison préciser")
-        self.health_conditions = list(
+        self.health_conditions = sorted(list(
             dataframe.iloc[:, start_column + 1 : end_column].columns
-        )
+        ))
         # Years
         self.years = sorted(dataframe["Year"].dropna().unique())
 
