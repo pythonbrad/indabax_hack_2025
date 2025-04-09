@@ -175,6 +175,15 @@ navbar = dbc.Navbar(
                         active="exact",
                         className="ms-auto",
                     ),
+                    dbc.NavLink(
+                        [
+                            html.I(className="bi bi-github me-1"),
+                            "GitHub",
+                        ],
+                        href="https://github.com/pythonbrad/indabax_hack_2025",
+                        active="exact",
+                        className="ms-auto",
+                    ),
                 ],
                 navbar=True,
                 className="ms-auto",
