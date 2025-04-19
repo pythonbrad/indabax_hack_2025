@@ -33,8 +33,8 @@ Some of our assumptions and decision are available at [`ASSUMPTION.md`](ASSUMPTI
 
 The project is divided in two components:
 
-- [The blood donation dashboard](dashboard)
-- [The API for eligibility prediction](api)
+- [The blood donation dashboard](dashboard/README.md)
+- [The API for eligibility prediction](api/README.md)
 
 **NB**: Each component can work independently.
 
